@@ -1,12 +1,24 @@
 import os
 import subprocess
 
-# Define input and output directories
-input_directory = '/Users/robbygrant/scripts/transcoder/files'
-output_directory = '/Users/robbygrant/scripts/transcoder/mp3s'
+# Read paths from config.txt
+with open('config.txt', 'r') as f:
+    config_lines = f.readlines()
+
+config = {}
+for line in config_lines:
+    if ':' not in line:
+        continue
+
+    key, value = line.strip().split(':')
+    config[key] = value
+
+input_directory = config['input_directory']
+output_directory = config['output_directory']
+metadata_file_path = config['metadata_file_path']
 
 # Read metadata from the text file
-with open('metadata.txt', 'r') as f:
+with open(metadata_file_path, 'r') as f:
     lines = f.readlines()
 
 # Iterate through each line in the metadata file
@@ -29,7 +41,7 @@ for line in lines:
     
     # Construct the output file name with artist, album, and desired output file name
     output_file_name = f"{artist} - {album} - {file_name}"
-    output_file = os.path.join(output_directory, output_file_name)
+    output_file = os.path.join(output_directory, output_file_name + '.aac')
 
     # Make sure the output directory exists
     os.makedirs(output_directory, exist_ok=True)
@@ -37,10 +49,10 @@ for line in lines:
     # Set the title metadata to just the song name with the wav file name (FUS prefix)
     title = os.path.splitext(file_name)[0]
 
-    # Transcode the WAV file to MP3 using FFmpeg and add metadata
+    # Transcode the WAV file to AAC using FFmpeg with a reduced bitrate and add metadata
     ffmpeg_command = [
-        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-b:a', '192k',
-        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'Year={year}', output_file
+        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'aac', '-b:a', '96k',
+        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'year={year}', output_file
     ]
 
     subprocess.run(ffmpeg_command)
