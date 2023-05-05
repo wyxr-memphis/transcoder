@@ -41,7 +41,7 @@ for line in lines:
     
     # Construct the output file name with artist, album, and desired output file name
     output_file_name = f"{artist} - {album} - {file_name}"
-    output_file = os.path.join(output_directory, output_file_name + '.aac')
+    output_file = os.path.join(output_directory, output_file_name + '.mp3')
 
     # Make sure the output directory exists
     os.makedirs(output_directory, exist_ok=True)
@@ -49,9 +49,9 @@ for line in lines:
     # Set the title metadata to just the song name with the wav file name (FUS prefix)
     title = os.path.splitext(file_name)[0]
 
-    # Transcode the WAV file to AAC using FFmpeg with a reduced bitrate and add metadata
+    # Transcode the WAV file to MP3 using FFmpeg with a reduced bitrate and add metadata
     ffmpeg_command = [
-        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'aac', '-b:a', '96k',
+        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'libmp3lame', '-b:a', '128k',
         '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'year={year}', output_file
     ]
 
