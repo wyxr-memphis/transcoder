@@ -52,9 +52,8 @@ for line in lines:
     # Transcode the WAV file to MP3 using FFmpeg with a reduced bitrate and add metadata
     # TYER is used for the release date
     ffmpeg_command = [
-        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'libmp3lame', '-b:a', '128k',
+        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'libmp3lame', '-b:a', '128k', '-id3v2_version', '3',
         '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'TYER={date}', output_file
     ]
-
 
     subprocess.run(ffmpeg_command)
