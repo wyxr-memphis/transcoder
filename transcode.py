@@ -26,12 +26,12 @@ for line in lines:
     # Split the line into parts
     parts = line.strip().split(',')
 
-    # Check if the line has a year
+    # Check if the line has a date
     if len(parts) == 5:
-        wav_file_name, artist, album, file_name, year = parts
+        wav_file_name, artist, album, file_name, date = parts
     else:
         wav_file_name, artist, album, file_name = parts
-        year = ""
+        date = ""
 
     # Replace 'DA' with 'FUS' in the wav_file_name
     input_wav_file_name = wav_file_name.replace('DA', 'FUS')
@@ -52,7 +52,7 @@ for line in lines:
     # Transcode the WAV file to MP3 using FFmpeg with a reduced bitrate and add metadata
     ffmpeg_command = [
         'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'libmp3lame', '-b:a', '128k',
-        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'year={year}', output_file
+        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'date={date}', output_file
     ]
 
     subprocess.run(ffmpeg_command)
