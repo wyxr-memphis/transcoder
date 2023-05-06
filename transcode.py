@@ -50,7 +50,7 @@ for line in lines:
     # Transcode the WAV file to AAC using FFmpeg with a reduced bitrate and add metadata
     ffmpeg_command = [
         'ffmpeg', '-i', input_file, '-vn', '-c:a', 'aac', '-b:a', '96k',
-        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'year={year}', output_file
+        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'date={year}', output_file
     ]
 
     subprocess.run(ffmpeg_command)
