@@ -1,4 +1,5 @@
 import os
+import csv
 import subprocess
 
 # Read paths from config.txt
@@ -17,12 +18,8 @@ input_directory = config['input_directory']
 output_directory = config['output_directory']
 metadata_file_path = config['metadata_file_path']
 
-# Read metadata from the text file
-with open(metadata_file_path, 'r') as f:
-    lines = f.readlines()
-
 # Get the user's choice for the genre
-print("Please choose a genre for this import batch:")
+print("Please choose a genre:")
 print("1. Rock")
 print("2. Funk and Soul")
 print("3. Pop")
@@ -33,23 +30,32 @@ choice = int(input("Enter the number corresponding to your choice: "))
 genres = ["Rock", "Funk and Soul", "Pop", "Hip-hop", "Electronic"]
 selected_genre = genres[choice - 1]
 
-# Iterate through each line in the metadata file
-for line in lines:
-    # Split the line into parts
-    parts = line.strip().split(',')
+# Initialize a list to store missing files
+missing_files = []
 
-    # Check if the line has a date
-    if len(parts) == 5:
-        wav_file_name, artist, album, file_name, date = parts
-    else:
-        wav_file_name, artist, album, file_name = parts
-        date = ""
+# Read metadata from the CSV file
+with open(metadata_file_path, 'r') as f:
+    reader = csv.reader(f)
+    header = [h.strip() for h in next(reader)]
+    rows = [dict(zip(header, row)) for row in reader]
 
-    # Replace 'DA' with 'FUS' in the wav_file_name
-    input_wav_file_name = wav_file_name.replace('DA', 'FUS')
+# Iterate through each row in the metadata file
+for row in rows:
+    wav_file_name = row['File']
+    artist = row['Artist'].strip()
+    album = row['Album'].strip()
+    file_name = row['Song'].strip()
+    date = row['Year'].strip()
+
+    # Replace 'DA' with 'SP' in the wav_file_name
+    input_wav_file_name = wav_file_name.replace('DA', 'SP')
 
     # Define input and output file paths
     input_file = os.path.join(input_directory, input_wav_file_name + '.wav')
+
+    if not os.path.exists(input_file):
+        missing_files.append((input_wav_file_name, artist, album, file_name))
+        continue
 
     # Construct the output file name with artist, album, and desired output file name
     output_file_name = f"{artist} - {album} - {file_name}"
@@ -68,3 +74,12 @@ for line in lines:
     ]
 
     subprocess.run(ffmpeg_command)
+
+# Print the list of missing files at the end of the script
+if missing_files:
+    print("\nThese files were not found:")
+    for file_info in missing_files:
+        file, artist, album, title = file_info
+        print(f"{file}: {artist} - {album} - {title}")
+else:
+    print("\nAll files were processed successfully.")
