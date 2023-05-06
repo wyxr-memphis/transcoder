@@ -1,4 +1,4 @@
-.DS_Store# Audio Transcoder
+# Audio Transcoder
 
 This Python script transcodes WAV files to M4A files using FFmpeg while adding metadata from a provided CSV file. The script also allows users to choose a genre for the transcoded files and logs any missing files.
 
