@@ -13,9 +13,9 @@ Before running the script, you need to have the following:
 
 You need to create a `config.txt` file in the same directory as the script, with the following format:
 
-input_directory: <path_to_input_directory>
-output_directory: <path_to_output_directory>
-metadata_file_path: <path_to_metadata_file>
+		input_directory: <path_to_input_directory>
+		output_directory: <path_to_output_directory>
+		metadata_file_path: <path_to_metadata_file>
 
 
 Replace `<path_to_input_directory>` with the path to the folder containing your input WAV files, `<path_to_output_directory>` with the path to the folder where you want the transcoded M4A files to be saved, and `<path_to_metadata_file>` with the path to the CSV file containing the metadata.
