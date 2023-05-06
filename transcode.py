@@ -26,22 +26,20 @@ for line in lines:
     # Split the line into parts
     parts = line.strip().split(',')
 
-    # Check if the line has a date
+    # Check if the line has a year
     if len(parts) == 5:
-        wav_file_name, artist, album, file_name, date = parts
+        wav_file_name, artist, album, file_name, year = parts
     else:
         wav_file_name, artist, album, file_name = parts
-        date = ""
+        year = ""
 
     # Replace 'DA' with 'FUS' in the wav_file_name
     input_wav_file_name = wav_file_name.replace('DA', 'FUS')
 
     # Define input and output file paths
     input_file = os.path.join(input_directory, input_wav_file_name + '.wav')
-    
-    # Construct the output file name with artist, album, and desired output file name
     output_file_name = f"{artist} - {album} - {file_name}"
-    output_file = os.path.join(output_directory, output_file_name + '.mp3')
+    output_file = os.path.join(output_directory, output_file_name + '.m4a')
 
     # Make sure the output directory exists
     os.makedirs(output_directory, exist_ok=True)
@@ -49,11 +47,10 @@ for line in lines:
     # Set the title metadata to just the song name with the wav file name (FUS prefix)
     title = os.path.splitext(file_name)[0]
 
-    # Transcode the WAV file to MP3 using FFmpeg with a reduced bitrate and add metadata
-    # TYER is used for the release date
+    # Transcode the WAV file to AAC using FFmpeg with a reduced bitrate and add metadata
     ffmpeg_command = [
-        'ffmpeg', '-i', input_file, '-vn', '-ar', '44100', '-ac', '2', '-c:a', 'libmp3lame', '-b:a', '128k', '-id3v2_version', '3',
-        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'TYER={date}', output_file
+        'ffmpeg', '-i', input_file, '-vn', '-c:a', 'aac', '-b:a', '96k',
+        '-metadata', f'artist={artist}', '-metadata', f'album={album}', '-metadata', f'title={title}', '-metadata', f'year={year}', output_file
     ]
 
     subprocess.run(ffmpeg_command)
